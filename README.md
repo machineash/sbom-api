@@ -4,7 +4,7 @@ I built this project to understand how **software supply chain security** actual
 
 This service starts simple: a Go API that manages component records from a software bill of materials (SBOM). Each phase adds a layer of realism.
 
-It starts with introducing safe vulnerabilities to generating SBOMs and scanning images, then finally, integrating secrets management with Vault. 
+The layering starts with introducing safe vulnerabilities to generating SBOMs and scanning images, then finally, integrating secrets management with Vault. 
 
 ---
 
