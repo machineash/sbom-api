@@ -2,6 +2,7 @@ package api
 
 import "sync"
 
+// define what a component looks like
 type Component struct {
 	ID       int    `json:"id"`
 	Name     string `json:"name"`
@@ -11,7 +12,7 @@ type Component struct {
 	License  string `json:"license"`
 }
 
-// in-memory store
+// in-memory store (shared reference)
 type store struct {
 	mu         sync.RWMutex
 	components map[int]Component
