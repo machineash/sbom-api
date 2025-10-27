@@ -17,7 +17,7 @@ type Handlers struct {
 	st *store
 }
 
-// NewHandlers() acts like a constructor. It builds the data store once and keps it alive across requests
+// NewHandlers() acts like a constructor. It builds the data store once and keeps it alive across requests
 // Every handler method works with the same state
 func NewHandlers() *Handlers {
 	return &Handlers{st: newStore()}
