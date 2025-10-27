@@ -13,6 +13,7 @@ import (
 // Handler struct + constructor
 
 // sets up a struct holding a pointer to the in-memory store (from model.go)
+// like a toolbox
 type Handlers struct {
 	st *store
 }
