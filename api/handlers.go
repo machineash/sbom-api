@@ -82,7 +82,7 @@ func (h *Handlers) List(w http.ResponseWriter, r *http.Request) {
 }
 
 // GET /components?id=123 (simple id query for Phase 1)
-// Converts query param ?id=123419 to an integer
+// Converts query param ?id=123 to an integer
 // Fetches from map safely
 // Returns 404 if not found
 
