@@ -59,7 +59,7 @@ Use ```curl``` or Postman to add and test records.
 Focus areas: dependency visibility, vulnerability scanning, and secure secret management.
 
 ### Overview
-Phase 2 introduced the first DevSecOps controls into one project.
+Phase 2 introduced the first DevSecOps controls into the project.
 
 The work centered on:
 1. Building a **Software Bill of Materials (SBOM)** for full dependency transparency.
