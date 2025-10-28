@@ -140,6 +140,7 @@ func (h *Handlers) Put(w http.ResponseWriter, r *http.Request) {
 }
 
 // PATCH /components?id=123 (partial)
+// test before phase 2
 func (h *Handlers) Patch(w http.ResponseWriter, r *http.Request) {
 	idStr := r.URL.Query().Get("id")
 	id, err := strconv.Atoi(idStr)
