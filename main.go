@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"sbom-api/api"
@@ -28,8 +29,19 @@ func main() {
 			h.Delete(w, r)
 		default:
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+
 		}
 	})
+
+	secrets, err := GetSecret()
+	if err != nil {
+		log.Printf("warning: vault unavailable (%v), using local defaults", err) // fallback config
+	}
+
+	fmt.Println("Loaded secrets:")
+	for k, v := range secrets {
+		fmt.Printf("%s, %v\n", k, v)
+	}
 
 	log.Println("Server running on :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
