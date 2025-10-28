@@ -71,7 +71,7 @@ The work centered on:
 - **SBOM generation:** Used `syft` to inventory dependencies; output stored as `sbom.json`.
 - **Vulnerability scanning:** Ran `govulncheck` across all packages; no reachable CVEs found.
 - **Secrets management:** Vault dev server configured; application reads config values from `secret/app/config` using token-based auth.
-- **CI/CD outline:** Draft GitHub Actions workflow added to run lint -> test -> SBOM -> scan steps on push.
+- **CI/CD outline (in progress): GitHub Actions workflow planned to run lint → test → SBOM → scan steps on push.
 
 ### Key Artifacts
 | File | Description |
