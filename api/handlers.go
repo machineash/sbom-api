@@ -110,6 +110,7 @@ func (h *Handlers) GetByID(w http.ResponseWriter, r *http.Request) {
 
 // Replace the full record with PUT
 // Validate incoming body and replace only if record exists
+// test before phase 2
 func (h *Handlers) Put(w http.ResponseWriter, r *http.Request) {
 	idStr := r.URL.Query().Get("id")
 	id, err := strconv.Atoi(idStr)
