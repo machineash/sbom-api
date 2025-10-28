@@ -38,6 +38,7 @@ func validate(c *Component) error {
 	if strings.TrimSpace(c.Source) == "" {
 		return errors.New("source is required")
 	}
+// add license if statement?
 	return nil
 }
 
