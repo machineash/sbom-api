@@ -89,9 +89,18 @@ The work centered on:
 - Ready to containerize and re-scan in **Phase 3 (Docker hardening)**.
 
 ### Lessons Learned 
+- **Create a `.gitignore` early.**  
+   - Prevents compiled binaries (like `.exe`) and local artifacts from accidentally being pushed to `main`.
+
+- **Capture command-line output and failures.**  
+   - Keeping logs of terminal commands and errors makes it easier to retrace steps and show the learning process, not just the final code.
+
+- **Use GitHub Releases for binaries.**  
+   - Each `.exe` can represent a project milestone or phase without cluttering the main branch, giving a clear progression from Phase 1 -> Phase 2 -> Phase 3.
+
 - SBOM and vuln-scan tools are lightweight enough to run pre-Docker.
+
 - Vault integration is easiest when baked into the app early.
-- Mocking CI gates on these steps highlights what "secure-by-default" looks like before deployment.
 
 ---
 
