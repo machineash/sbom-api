@@ -55,6 +55,7 @@ Use ```curl``` or Postman to add and test records.
 ## Phase 2 - Secure Software Supply Chain
 
 **Purpose:** Strengthen this Go API's security posture before containerization.
+
 Focus areas: dependency visibility, vulnerability scanning, and secure secret management.
 
 ### Overview
