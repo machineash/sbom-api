@@ -107,7 +107,7 @@ This phase centered on:
 
 ---
 
-*Next phase -> containerization, SBOM + scan on built image, and runtime security validation.*
+*Next phase -> prettify JSON file, containerization via Docker, SBOM + scan on built image, and runtime security validation.*
 
 
 
