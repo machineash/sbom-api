@@ -56,7 +56,7 @@ Use ```curl``` or Postman to add and test records.
 
 **Purpose:** Strengthen this Go API's security posture before containerization.
 
-Focus areas: dependency visibility, vulnerability scanning, and secure secret management.
+**Focus areas:** dependency visibility, vulnerability scanning, and secure secret management.
 
 ### Overview
 Phase 2 introduced the first DevSecOps controls into the project.
@@ -101,18 +101,23 @@ The work centered on:
 
 
 ### Lessons Learned 
-- **Create a `.gitignore` early.**  
-   - Prevents compiled binaries (like `.exe`) and local artifacts from accidentally being pushed to `main`.
+- **Create a .gitignore early:** prevents compiled binaries and local artifacts from polluting the main branch.
 
-- **Capture command-line output and failures.**  
-   - Keeping logs of terminal commands and errors makes it easier to retrace steps and show the learning process, not just the final code.
+- **Capture CLI output and failures:** keeping logs makes it easier to retrace steps and show learning progress, not just results.
 
-- **Use GitHub Releases for binaries.**  
-   - Each `.exe` can represent a project milestone or phase without cluttering the main branch, giving a clear progression from Phase 1 -> Phase 2 -> Phase 3.
+- **Use GitHub Releases for binaries:** each .exe can mark a milestone without cluttering the branch.
 
-- SBOM and vuln-scan tools are lightweight enough to run pre-Docker.
+- **Be careful when refactoring folder structure:** moving files or saving mid-refactor can break imports; once saved, Go might auto-remove imports, leading to time spent troubleshooting.
 
-- Vault integration is easiest when baked into the app early.
+- **Indentation matters in YAML:** spacing and alignment are strict; a single misplaced space can break CI.
+
+- **Troubleshoot YAML locally before pushing:** tools like yamllint can catch indentation or schema errors early.
+
+- **Simulate GitHub Actions locally:** you can use lightweight runners (e.g., act) to test workflows before committing; GitHub Actions remains the final validator on push.
+
+- **Ensure line endings are set to LF:** inconsistent endings (CRLF vs LF) can confuse YAML parsers on different systems.
+
+
 
 ---
 
