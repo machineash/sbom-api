@@ -1,0 +1,38 @@
+# Binaries and executables
+*.exe
+*.out
+*.dll
+*.so
+*.dylib
+
+# Build and output folders
+/bin/
+/build/
+/dist/
+
+# Go-specific
+*.test
+*.log
+coverage.out
+
+# Dependency directories (if any)
+vendor/
+
+# OS / Editor artifacts
+.DS_Store
+Thumbs.db
+
+# Environment and secrets
+.env
+.env.*
+*.key
+*.pem
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# Docker Artifacts
+*.tar
+docker-compose.override.yml
