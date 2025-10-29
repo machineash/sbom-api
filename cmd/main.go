@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	api "sbom-api/api/handlers"
+	"sbom-api/api/handlers"
+	"sbom-api/api/vault"
 )
 
 func main() {
-	h := api.NewHandlers()
+	h := handlers.NewHandlers()
 
 	http.HandleFunc("/components", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
@@ -33,7 +34,7 @@ func main() {
 		}
 	})
 
-	secrets, err := GetSecret()
+	secrets, err := vault.GetSecret()
 	if err != nil {
 		log.Printf("warning: vault unavailable (%v), using local defaults", err) // fallback config
 	}

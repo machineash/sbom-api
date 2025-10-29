@@ -8,9 +8,31 @@ import (
 	"net/http"      // handle requests and responses
 	"strconv"       // convert strings IDs from query params to integers
 	"strings"       // basic text cleanup for validation
+	"sync"
 )
 
 // Handler struct + constructor
+type store struct {
+	mu         sync.Mutex
+	nextID     int
+	components map[int]Component
+	data       map[string]string
+}
+
+type Component struct {
+	Name     string
+	Version  string
+	Checksum string
+	Source   string
+	ID       int
+	License  string
+}
+
+func newStore() *store {
+	return &store{
+		data: make(map[string]string),
+	}
+}
 
 // sets up a struct holding a pointer to the in-memory store (from model.go)
 // like a toolbox
@@ -74,8 +96,8 @@ func (h *Handlers) Create(w http.ResponseWriter, r *http.Request) {
 
 // GET /components
 func (h *Handlers) List(w http.ResponseWriter, r *http.Request) {
-	h.st.mu.RLock()
-	defer h.st.mu.RUnlock()
+	h.st.mu.Lock()
+	defer h.st.mu.Unlock()
 
 	out := make([]Component, 0, len(h.st.components))
 	for _, v := range h.st.components {
@@ -97,9 +119,9 @@ func (h *Handlers) GetByID(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid id", http.StatusBadRequest)
 		return
 	}
-	h.st.mu.RLock()
+	h.st.mu.Lock()
 	c, ok := h.st.components[id]
-	h.st.mu.RUnlock()
+	h.st.mu.Unlock()
 	if !ok {
 		http.Error(w, "not found", http.StatusNotFound)
 		return
