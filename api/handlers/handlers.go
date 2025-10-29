@@ -1,4 +1,4 @@
-package api
+package handlers
 
 // import the essentials.
 
@@ -38,9 +38,9 @@ func validate(c *Component) error {
 	if strings.TrimSpace(c.Source) == "" {
 		return errors.New("source is required")
 	}
- //if strings.TrimSpace(c.License) == "" {
-	 //return errors.New("license is required")
- //}
+	//if strings.TrimSpace(c.License) == "" {
+	//return errors.New("license is required")
+	//}
 	return nil
 }
 

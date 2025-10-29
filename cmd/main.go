@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"sbom-api/api"
+	api "sbom-api/api/handlers"
 )
 
 func main() {
