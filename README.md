@@ -2,18 +2,9 @@
 
 I built this project to understand how **software supply chain security** actually works - not just in theory, but through code I can run, break, and fix.
 
-This service starts simple: a Go API that manages component records from a software bill of materials (SBOM). Each phase adds a layer of realism.
+This service starts simple: a Go API that manages component records from a software bill of materials (SBOM). Each phase adds a layer of complexity and realism.
 
-The layering starts with introducing safe vulnerabilities to generating SBOMs and scanning images, then finally, integrating secrets management with Vault. 
-
-## Project Roadmap
-Each phase will add more depth:
-- Introduce a non-harmful supply chain flaw (unpinned dependency, missing validation)
-- Simulate auth and token errors
-- Generate and scan SBOMs (Syft/Trivy)
-- Harden CI/CD (pinned actions, artifact signing)
-- Integrate Vault for dynamic secrets
-- Containerize and scan the image
+It starts with building the foundation (CRUD, dummy data) then moves onto scanning images, Vault integration, and fixing non-harmful yet realistic vulnerabilities.
 
 ---
 
@@ -54,21 +45,22 @@ Use ```curl``` or Postman to add and test records.
 
 ## Phase 2 - Secure Software Supply Chain
 
-**Purpose:** Strengthen this Go API's security posture before containerization.
+**Purpose:** Strengthen the API's security posture before containerization.
 
 **Focus areas:** dependency visibility, vulnerability scanning, and secure secret management.
 
 ### Overview
-Phase 2 introduced the first DevSecOps controls into the project.
+Phase 2 introduced the first DevSecOps control into the picture.
 
-The work centered on:
+This phase centered on:
 1. Building a **Software Bill of Materials (SBOM)** for full dependency transparency.
 2. Running **automated vulnerability scans** to verify code safety.
 3. Integrating **HashiCorp Vault** for runtime secret management.
 4. Designing a **mock CI/CD workflow** that enforces these checks before build or deploy.
+5. Adding 100 records of randomized dummy data to fill the database (in progress)
 
 ### Implementation Summary
-- Reorganized project into api/handlers, api/vault, and cmd/ for cleaner modularity.
+- Reorganized project into api/handlers, api/vault, and cmd/ for clarity.
 
 - Established a working CI pipeline (ci.yml) for automated build and test validation on every push.
 
@@ -76,7 +68,7 @@ The work centered on:
 
 - Ensured reproducible builds by aligning module paths (go.mod) and eliminating broken imports.
 
-- Verified Vault package structure and basic function export (GetSecret) for Phase 3 integration.
+- Verified Vault package structure and basic function export (GetSecret) for Phase 3 integration. Lots of troubleshooting and fun!
 
 ### Key Artifacts
 | File | Description |
@@ -89,35 +81,29 @@ The work centered on:
 
 
 ### Outcomes
-- Verified zero known vulnerabilities at time of scan.
-
-- Removed hardcoded secrets from the codebase.
+- Verified zero known vulnerabilities at time of scan. 
 
 - Established repeatable dependency and secret hygiene.
 
 - CI pipeline passing consistently with GitHub Actions checks.
 
-- Ready to containerize and re-scan in Phase 3 (Docker hardening).
+- Ready to containerize and scan in Phase 3 (Docker hardening).
 
 
 ### Lessons Learned 
 - **Create a .gitignore early:** prevents compiled binaries and local artifacts from polluting the main branch.
 
-- **Capture CLI output and failures:** keeping logs makes it easier to retrace steps and show learning progress, not just results.
+- **Capture CLI output and failures:** keeping logs makes it easier to retrace steps and document learning progress, not just the results.
 
-- **Use GitHub Releases for binaries:** each .exe can mark a milestone without cluttering the branch.
+- **Use GitHub Releases for binaries:** each .exe can mark a milestone without cluttering the main branch. This goes hand-in-hand with .gitignore.
 
-- **Be careful when refactoring folder structure:** moving files or saving mid-refactor can break imports; once saved, Go might auto-remove imports, leading to time spent troubleshooting.
+- **Be careful when editing folder structure:** moving files to different folders can break imports. One moment, everything is fine, and the next, the page is flooded with red squiggly lines. Go might even auto-remove these underlined imports when saving, leading to time spent troubleshooting.
 
-- **Indentation matters in YAML:** spacing and alignment are strict; a single misplaced space can break CI.
+- **Indentation matters in YAML:** spacing and alignment are strict; a single misplaced space can break CI and lead to failures. Make sure the right option is selected in the bottom right (LF vs CRLF). Spacing is important and can be the difference between getting back 0 errors or 5.
 
-- **Troubleshoot YAML locally before pushing:** tools like yamllint can catch indentation or schema errors early.
+- **Troubleshoot YAML locally before pushing:** tools like yamllint can catch indentation or schema errors early and before pushing to GitHub. 
 
-- **Simulate GitHub Actions locally:** you can use lightweight runners (e.g., act) to test workflows before committing; GitHub Actions remains the final validator on push.
-
-- **Ensure line endings are set to LF:** inconsistent endings (CRLF vs LF) can confuse YAML parsers on different systems.
-
-
+- **Simulate GitHub Actions locally:** you can use lightweight runners (e.g., act) to test workflows before committing. 
 
 ---
 
