@@ -4,66 +4,23 @@ package handlers
 
 import (
 	"encoding/json" /// parse + return JSON
-	"errors"        // lightweight validation messages
-	"net/http"      // handle requests and responses
-	"strconv"       // convert strings IDs from query params to integers
-	"strings"       // basic text cleanup for validation
-	"sync"
+	// lightweight validation messages
+	"net/http" // handle requests and responses
+	"os"
+	"sbom-api/api/models"
+	"strconv" // convert strings IDs from query params to integers
 )
-
-// Handler struct + constructor
-type store struct {
-	mu         sync.Mutex
-	nextID     int
-	components map[int]Component
-	data       map[string]string
-}
-
-type Component struct {
-	Name     string
-	Version  string
-	Checksum string
-	Source   string
-	ID       int
-	License  string
-}
-
-func newStore() *store {
-	return &store{
-		data: make(map[string]string),
-	}
-}
 
 // sets up a struct holding a pointer to the in-memory store (from model.go)
 // like a toolbox
 type Handlers struct {
-	st *store
+	St *models.Store
 }
 
 // NewHandlers() acts like a constructor. It builds the data store once and keeps it alive across requests
 // Every handler method works with the same state
 func NewHandlers() *Handlers {
-	return &Handlers{st: newStore()}
-}
-
-// simple validation for phase 1 (update later as needed)
-func validate(c *Component) error {
-	if strings.TrimSpace(c.Name) == "" {
-		return errors.New("name is required")
-	}
-	if strings.TrimSpace(c.Version) == "" {
-		return errors.New("version is required")
-	}
-	if strings.TrimSpace(c.Checksum) == "" { // CHECK
-		return errors.New("checksum is required")
-	}
-	if strings.TrimSpace(c.Source) == "" {
-		return errors.New("source is required")
-	}
-	//if strings.TrimSpace(c.License) == "" {
-	//return errors.New("license is required")
-	//}
-	return nil
+	return &Handlers{St: models.NewStore()}
 }
 
 // POST /components
@@ -74,37 +31,58 @@ func validate(c *Component) error {
 // Returns the created object in JSON with 201 created
 
 func (h *Handlers) Create(w http.ResponseWriter, r *http.Request) {
-	var c Component
+	var c models.Component
 	if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
 		http.Error(w, "invalid JSON", http.StatusBadRequest)
 		return
 	}
-	if err := validate(&c); err != nil {
+	if err := c.Validate(); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	h.st.mu.Lock()
-	c.ID = h.st.nextID
-	h.st.nextID++
-	h.st.components[c.ID] = c
-	h.st.mu.Unlock()
+	h.St.Mu.Lock()
+	c.ID = h.St.NextID
+	h.St.NextID++
+	h.St.Components[c.ID] = c
+	h.St.Mu.Unlock()
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	_ = json.NewEncoder(w).Encode(c)
+	// below change
+	// _ = json.NewEncoder(w).Encode(c)
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	_ = enc.Encode(c)
+
+	// second pretified artifact
+	b, err := json.MarshalIndent(c, "", "  ")
+	if err == nil {
+		_ = os.WriteFile("artifact_pretty.json", b, 0644)
+	}
+
 }
 
 // GET /components
 func (h *Handlers) List(w http.ResponseWriter, r *http.Request) {
-	h.st.mu.Lock()
-	defer h.st.mu.Unlock()
+	h.St.Mu.Lock()
+	defer h.St.Mu.Unlock()
 
-	out := make([]Component, 0, len(h.st.components))
-	for _, v := range h.st.components {
+	out := make([]models.Component, 0, len(h.St.Components))
+	for _, v := range h.St.Components {
 		out = append(out, v)
 	}
 	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(out)
+	// change below
+	// _ = json.NewEncoder(w).Encode(out)
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	_ = enc.Encode(out)
+
+	// second pretified artifact
+	b, err := json.MarshalIndent(out, "", "  ")
+	if err == nil {
+		_ = os.WriteFile("artifact_pretty.json", b, 0644)
+	}
 }
 
 // GET /components?id=123 (simple id query for Phase 1)
@@ -119,15 +97,25 @@ func (h *Handlers) GetByID(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid id", http.StatusBadRequest)
 		return
 	}
-	h.st.mu.Lock()
-	c, ok := h.st.components[id]
-	h.st.mu.Unlock()
+	h.St.Mu.Lock()
+	c, ok := h.St.Components[id]
+	h.St.Mu.Unlock()
 	if !ok {
 		http.Error(w, "not found", http.StatusNotFound)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(c)
+	// below change
+	// _ = json.NewEncoder(w).Encode(c)
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	_ = enc.Encode(c)
+
+	// second pretified artifact
+	b, err := json.MarshalIndent(c, "", "  ")
+	if err == nil {
+		_ = os.WriteFile("artifact_pretty.json", b, 0644)
+	}
 }
 
 // PUT /components?id=123 (replace)
@@ -142,26 +130,30 @@ func (h *Handlers) Put(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid id", http.StatusBadRequest)
 		return
 	}
-	var c Component
+	var c models.Component
 	if err := json.NewDecoder(r.Body).Decode(&c); err != nil {
 		http.Error(w, "invalid JSON", http.StatusBadRequest)
 		return
 	}
-	if err := validate(&c); err != nil {
+	if err := c.Validate(); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	c.ID = id
-	h.st.mu.Lock()
-	if _, exists := h.st.components[id]; !exists {
-		h.st.mu.Unlock()
+	h.St.Mu.Lock()
+	if _, exists := h.St.Components[id]; !exists {
+		h.St.Mu.Unlock()
 		http.Error(w, "not found", http.StatusNotFound)
 		return
 	}
-	h.st.components[id] = c
-	h.st.mu.Unlock()
+	h.St.Components[id] = c
+	h.St.Mu.Unlock()
 	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(c)
+	// _ = json.NewEncoder(w).Encode(c)
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	_ = enc.Encode(c)
+
 }
 
 // PATCH /components?id=123 (partial)
@@ -178,10 +170,10 @@ func (h *Handlers) Patch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid JSON", http.StatusBadRequest)
 		return
 	}
-	h.st.mu.Lock()
-	c, ok := h.st.components[id]
+	h.St.Mu.Lock()
+	c, ok := h.St.Components[id]
 	if !ok {
-		h.st.mu.Unlock()
+		h.St.Mu.Unlock()
 		http.Error(w, "not found", http.StatusNotFound)
 		return
 	}
@@ -200,11 +192,15 @@ func (h *Handlers) Patch(w http.ResponseWriter, r *http.Request) {
 	if v, ok := in["license"].(string); ok {
 		c.License = v
 	}
-	h.st.components[id] = c
-	h.st.mu.Unlock()
+	h.St.Components[id] = c
+	h.St.Mu.Unlock()
 
 	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(c)
+	// _ = json.NewEncoder(w).Encode(c)
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	_ = enc.Encode(c)
+
 }
 
 // DELETE /components?id=123
@@ -217,15 +213,15 @@ func (h *Handlers) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.st.mu.Lock()
-	defer h.st.mu.Unlock() // ensures it always unlocks even if something fails
+	h.St.Mu.Lock()
+	defer h.St.Mu.Unlock() // ensures it always unlocks even if something fails
 
 	// check existence first
-	if _, ok := h.st.components[id]; !ok {
+	if _, ok := h.St.Components[id]; !ok {
 		http.Error(w, "not found", http.StatusNotFound)
 	}
 
 	// delete and respond
-	delete(h.st.components, id)
+	delete(h.St.Components, id)
 	w.WriteHeader(http.StatusNoContent)
 }

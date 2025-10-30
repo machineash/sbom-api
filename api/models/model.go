@@ -1,6 +1,10 @@
-package api
+package models
 
-import "sync"
+import (
+	"errors"
+	"strings"
+	"sync"
+)
 
 // define what a component looks like
 type Component struct {
@@ -13,15 +17,36 @@ type Component struct {
 }
 
 // in-memory store (shared reference)
-type store struct {
-	mu         sync.RWMutex
-	components map[int]Component
-	nextID     int
+type Store struct {
+	Mu         sync.RWMutex
+	Components map[int]Component
+	NextID     int
 }
 
-func newStore() *store {
-	return &store{
-		components: make(map[int]Component),
-		nextID:     1,
+// Exported constructor
+func NewStore() *Store {
+	return &Store{
+		Components: make(map[int]Component),
+		NextID:     1,
 	}
+}
+
+// simple validation for phase 1 (update later as needed)
+func (c *Component) Validate() error {
+	if strings.TrimSpace(c.Name) == "" {
+		return errors.New("name is required")
+	}
+	if strings.TrimSpace(c.Version) == "" {
+		return errors.New("version is required")
+	}
+	if strings.TrimSpace(c.Checksum) == "" { // CHECK
+		return errors.New("checksum is required")
+	}
+	if strings.TrimSpace(c.Source) == "" {
+		return errors.New("source is required")
+	}
+	if strings.TrimSpace(c.License) == "" {
+		return errors.New("license is required")
+	}
+	return nil
 }
