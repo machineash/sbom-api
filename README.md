@@ -1,4 +1,4 @@
-# SBOM API
+# Software Bill of Materials API
 
 I built this project to understand how **software supply chain security** actually works - not just in theory, but through code I can run, break, and fix.
 
