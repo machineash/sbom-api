@@ -34,11 +34,6 @@ func main() {
 		}
 	})
 
-	secrets, err := vault.GetSecret()
-	if err != nil {
-		log.Printf("warning: vault unavailable (%v), using local defaults", err) // fallback config
-	}
-
 // check this
 	secrets, err := vault.GetSecret("secret/data/app/config")
 if err != nil {
