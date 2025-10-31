@@ -39,10 +39,13 @@ func main() {
 		log.Printf("warning: vault unavailable (%v), using local defaults", err) // fallback config
 	}
 
-	fmt.Println("Loaded secrets:")
-	for k, v := range secrets {
-		fmt.Printf("%s, %v\n", k, v)
-	}
+// check this
+	secrets, err := vault.GetSecret("secret/data/app/config")
+if err != nil {
+    log.Printf("Vault unavailable: %v", err)
+} else {
+    log.Printf("Loaded %d secrets from Vault", len(secrets))
+}
 
 	log.Println("Server running on :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
