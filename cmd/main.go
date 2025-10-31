@@ -34,12 +34,12 @@ func main() {
 	})
 
 // check this
-secrets, err := vault.GetSecret("secret/data/app/config")
-	if err != nil {
-		log.Printf("Vault unavailable: %v", err)
-	} else {
-		log.Printf("Loaded %d secrets from Vault", len(secrets))
-		_ = secrets // TODO: use secrets for config
+ secrets, err := vault.GetSecret("secret/data/app/config")
+	 if err != nil {
+		 log.Printf("Vault unavailable: %v", err)
+	 } else {
+		 log.Printf("Loaded %d secrets from Vault", len(secrets))
+		 _ = secrets // TODO: use secrets for config
 	}
 
 	log.Println("Server running on :8080")
