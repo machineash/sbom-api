@@ -219,6 +219,7 @@ func (h *Handlers) Delete(w http.ResponseWriter, r *http.Request) {
 	// check existence first
 	if _, ok := h.St.Components[id]; !ok {
 		http.Error(w, "not found", http.StatusNotFound)
+  return
 	}
 
 	// delete and respond
