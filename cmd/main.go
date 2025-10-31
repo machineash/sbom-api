@@ -34,7 +34,7 @@ func main() {
 	})
 
 // check this
-	secrets, err := vault.GetSecret("secret/data/app/config")
+secrets, err := vault.GetSecret("secret/data/app/config")
 	if err != nil {
 		log.Printf("Vault unavailable: %v", err)
 	} else {
