@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"sbom-api/api/handlers"
@@ -36,11 +35,12 @@ func main() {
 
 // check this
 	secrets, err := vault.GetSecret("secret/data/app/config")
-if err != nil {
-    log.Printf("Vault unavailable: %v", err)
-} else {
-    log.Printf("Loaded %d secrets from Vault", len(secrets))
-}
+	if err != nil {
+		log.Printf("Vault unavailable: %v", err)
+	} else {
+		log.Printf("Loaded %d secrets from Vault", len(secrets))
+		_ = secrets // TODO: use secrets for config
+	}
 
 	log.Println("Server running on :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
